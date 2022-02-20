@@ -2,11 +2,11 @@ use std::{io, time, thread, fs};
 
 fn main() {
 
-    println!("Please fill in amount of hours!");
+    println!("Please select amount of hours!");
     let start_time_hours = get_start_time();
-    println!("Please fill in amount of minutes!");
+    println!("Please select amount of minutes!");
     let start_time_minutes= get_start_time();
-    println!("Please fill in amount of seconds!");
+    println!("Please select amount of seconds!");
     let start_time_seconds= get_start_time();
 
     let mut time_in_seconds = convert_time_to_seconds(start_time_hours, start_time_minutes, start_time_seconds);
@@ -49,14 +49,10 @@ fn print_time_left(mut time: i32){
     let mut time_string_vector: Vec<String> = Vec::new();
 
     let hours = time / 3600;
-    println!("{}", hours);
-    time = (time - (hours * 3600));
-    println!("time left: {}", time);
+    time = time - (hours * 3600);
     let minutes = time / 60;
-    println!("{}", minutes);
     time = time - (minutes / 60);
     let seconds = time % 60;
-    println!("{}", seconds);
 
     let time_string = format!("{:02}:{:02}:{:02}", hours, minutes, seconds);
 
