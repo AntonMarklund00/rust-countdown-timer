@@ -10,12 +10,11 @@ fn main() {
     let start_time_seconds= get_start_time();
 
     let mut time_in_seconds = convert_time_to_seconds(start_time_hours, start_time_minutes, start_time_seconds);
-
-    while time_in_seconds != 0{
+    while time_in_seconds > -1{
         clear_screen();
         print_time_left(time_in_seconds);
-        thread::sleep(time::Duration::from_secs(1));
         time_in_seconds = time_in_seconds-1;
+        thread::sleep(time::Duration::from_secs(1));
     }
     
 }
