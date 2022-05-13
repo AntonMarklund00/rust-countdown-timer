@@ -1,4 +1,5 @@
 use std::{io, time, thread, fs};
+use std::collections::HashMap;
 
 fn main() {
 
@@ -10,12 +11,28 @@ fn main() {
     let start_time_seconds= get_start_time();
 
     let mut time_in_seconds = convert_time_to_seconds(start_time_hours, start_time_minutes, start_time_seconds);
+
+//     let start = Instant::now();
+
+
+    let mut ascii_hash:HashMap<String, String> = HashMap::new();
+
     while time_in_seconds > -1{
+        let countdown_thread = thread::spawn(|| {
+            thread::sleep(time::Duration::from_secs(1));
+        });
+
+        countdown_thread.join().map_err(|err| println!("{:?}", err)).ok();
+
         clear_screen();
-        print_time_left(time_in_seconds);
+        
+        ascii_hash = print_time_left(time_in_seconds, ascii_hash);
         time_in_seconds = time_in_seconds-1;
-        thread::sleep(time::Duration::from_secs(1));
+
     }
+
+    // let duration = start.elapsed();
+    // println!("{:?}", duration);
     
 }
 
@@ -44,7 +61,7 @@ fn clear_screen(){
     print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
 }
 
-fn print_time_left(mut time: i32){
+fn print_time_left(mut time: i32, mut ascii_hash: HashMap<String, String>) -> HashMap<String, String>{
     let mut time_string_vector: Vec<String> = Vec::new();
 
     let hours = time / 3600;
@@ -58,10 +75,18 @@ fn print_time_left(mut time: i32){
     for digit in time_string.to_string().split("") {
         if digit == "" { continue }
 
-        let big_digit = get_time_in_big_ascii(&digit);
+        let mut big_digit = String::new(); 
+
+        if ascii_hash.contains_key(digit) {
+            big_digit = ascii_hash.get(digit).unwrap().to_string();
+        }else{
+            big_digit = get_time_in_big_ascii(&digit);
+            ascii_hash.insert(digit.to_string(), big_digit.clone());
+        }
 
         if time_string_vector.len() < 1 {
-            time_string_vector = vec!["".to_string(); big_digit.split("\n").count()];
+            time_string_vector = vec!["".to_string(); 
+            big_digit.split("\n").count()];
         }
 
         for (j, y) in big_digit.split("\n").enumerate() {
@@ -70,6 +95,7 @@ fn print_time_left(mut time: i32){
     }
 
     print_string_vector(time_string_vector);
+    ascii_hash  
 }
 
 fn get_time_in_big_ascii(mut filename : &str) -> String{
@@ -83,3 +109,4 @@ fn print_string_vector(vector: Vec<String>){
         println!("{}", x);
     }
 }
+
