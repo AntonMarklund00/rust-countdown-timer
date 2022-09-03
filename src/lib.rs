@@ -1,10 +1,12 @@
 use std::error::Error;
 use std::{io, time, thread, fs};
 use std::collections::HashMap;
+use colored::Colorize;
 
 pub fn run(_args: Vec<String>) -> Result<(), Box<dyn Error>>{
 
     let args_length = _args.len();
+
     let start_time_hours: i32; 
     let start_time_minutes: i32; 
     let start_time_seconds: i32; 
@@ -131,6 +133,6 @@ fn get_time_in_big_ascii(mut filename : &str) -> String{
 
 fn print_string_vector(vector: Vec<String>){
     for x in vector {
-        println!("{}", x);
+        println!("{}", format!("{}", x).purple());
     }
 }
