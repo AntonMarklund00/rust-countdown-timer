@@ -10,7 +10,7 @@ pub fn run(_args: Vec<String>) -> Result<(), Box<dyn Error>>{
     let start_time_seconds: i32; 
 
     println!("{}", _args[0]);
-    if args_length < 1{
+    if args_length < 2{
         println!("Please select amount of hours!");
         start_time_hours = get_start_time();
         println!("Please select amount of minutes!");
