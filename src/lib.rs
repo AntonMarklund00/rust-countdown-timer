@@ -3,33 +3,25 @@ use std::{io, time, thread, fs};
 use std::collections::HashMap;
 use colored::Colorize;
 
+struct Time{
+    hours: i32,
+    minutes: i32,
+    seconds: i32
+}
+
+impl Time{
+    fn get_time_in_seconds(&self) -> i32{
+        self.hours*3600 + self.minutes*60 + self.seconds
+    }
+}
+
 pub fn run(_args: Vec<String>) -> Result<(), Box<dyn Error>>{
 
-    let args_length = _args.len();
 
-    let start_time_hours: i32; 
-    let start_time_minutes: i32; 
-    let start_time_seconds: i32; 
+    let time = get_time(_args);
+    validate_time(&time);
 
-    println!("{}", _args[0]);
-    if args_length < 2{
-        println!("Please select amount of hours!");
-        start_time_hours = get_start_time();
-        println!("Please select amount of minutes!");
-        start_time_minutes= get_start_time();
-        println!("Please select amount of seconds!");
-        start_time_seconds= get_start_time();
-    }else if args_length == 4{
-        start_time_hours = _args[1].parse::<i32>().unwrap();
-        start_time_minutes = _args[2].parse::<i32>().unwrap();
-        start_time_seconds = _args[3].parse::<i32>().unwrap();
-    }else{
-        panic!("Unvalid input")
-    }
-
-    validate_time(start_time_hours, start_time_minutes, start_time_seconds);
-
-    let mut time_in_seconds = convert_time_to_seconds(start_time_hours, start_time_minutes, start_time_seconds);
+    let mut time_in_seconds = time.get_time_in_seconds();
 
 
     let mut ascii_hash: HashMap<String, String> = HashMap::new();
@@ -53,14 +45,35 @@ pub fn run(_args: Vec<String>) -> Result<(), Box<dyn Error>>{
     Ok(())
 }
 
-fn validate_time(hours: i32, minutes: i32, seconds: i32) {
-    if hours > 99 || minutes > 59 || seconds > 59 {
+fn get_time(args: Vec<String>) -> Time{
+    let mut time = Time{
+        hours: 0,
+        minutes: 0,
+        seconds: 0
+    };
+
+    let args_length = args.len();
+    if args_length < 2{
+        println!("Please select amount of hours!");
+        time.hours = get_start_time();
+        println!("Please select amount of minutes!");
+        time.minutes = get_start_time();
+        println!("Please select amount of seconds!");
+        time.seconds = get_start_time();
+    }else if args_length == 4{
+        time.hours = args[1].parse::<i32>().unwrap();
+        time.minutes = args[2].parse::<i32>().unwrap();
+        time.seconds = args[3].parse::<i32>().unwrap();
+    }else{
         panic!("Unvalid input")
     }
+    time
 }
 
-fn convert_time_to_seconds(hours: i32, minutes: i32, seconds: i32) -> i32{
-    hours*3600 + minutes*60 + seconds
+fn validate_time(time: &Time) {
+    if time.hours > 99 || time.minutes > 59 || time.seconds > 59 {
+        panic!("Unvalid input")
+    }
 }
 
 fn get_start_time() -> i32{
